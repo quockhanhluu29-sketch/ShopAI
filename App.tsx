@@ -1,45 +1,31 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect } from 'react';
+import * as Updates from 'expo-updates';
+import { ENABLE_OTA_UPDATE } from './src/constants/env';
+import { RootNavigator } from './src/navigation/RootNavigator';
+import { recordBreadcrumb, recordNonFatal } from './src/services/crashReporter';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+const App = () => {
+  useEffect(() => {
+    if (__DEV__ || !ENABLE_OTA_UPDATE || !Updates.isEnabled) return;
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+    const checkForUpdate = async (): Promise<void> => {
+      try {
+        recordBreadcrumb('Checking for an OTA update');
+        const update = await Updates.checkForUpdateAsync();
+        if (!update.isAvailable) return;
 
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
+        await Updates.fetchUpdateAsync();
+        recordBreadcrumb('OTA update downloaded; reloading app');
+        await Updates.reloadAsync();
+      } catch (error) {
+        recordNonFatal('OtaUpdateCheckFailed', error);
+      }
+    };
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+    void checkForUpdate();
+  }, []);
 
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+  return <RootNavigator />;
+};
 
 export default App;

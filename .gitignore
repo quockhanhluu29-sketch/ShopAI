@@ -65,6 +65,11 @@ yarn-error.log
 
 # testing
 /coverage
+/android/app/google-services.json
+/ios/ShopAI/GoogleService-Info.plist
+*.keystore
+*.jks
+android/gradle.properties.local
 
 # Yarn
 .yarn/*
@@ -73,3 +78,8 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Expo
+.expo
+dist/
+web-build/

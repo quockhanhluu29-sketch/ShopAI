@@ -1,4 +1,18 @@
 {
-  "name": "ShopAI",
-  "displayName": "ShopAI"
+  "expo": {
+    "name": "ShopAI",
+    "slug": "shopai",
+    "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "checkAutomatically": "NEVER",
+      "url": "https://u.expo.dev/dfbc655e-d8c2-41af-9fdd-a7885cdc7636"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dfbc655e-d8c2-41af-9fdd-a7885cdc7636"
+      }
+    },
+    "owner": "quockhanh1"
+  }
 }

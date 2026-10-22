@@ -1,0 +1,51 @@
+name: ShopAI CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  mobile:
+    name: Mobile checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:coverage -- --coverageReporters=text
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-coverage
+          path: coverage/
+          retention-days: 14
+
+  backend:
+    name: Backend checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shopai-backend
+    env:
+      DATABASE_URL: file:./ci.db
+      JWT_SECRET: ci-only-test-secret-not-for-production
+      JWT_EXPIRES_IN: 1d
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: shopai-backend/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:e2e
