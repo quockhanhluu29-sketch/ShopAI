@@ -6,7 +6,7 @@ import ShopButton from '@components/ShopButton';
 import ShopInput from '@components/ui/ShopInput';
 import Typography from '@components/ui/Typography';
 import { COLORS } from '@constants/theme';
-import { loginWithPassword } from '@services/authService';
+import { getAuthErrorMessage, loginWithPassword } from '@services/authService';
 import { useTheme } from '@contexts/ThemeContext';
 
 const LoginScreen = ({ onRegister }: { onRegister: () => void }) => {
@@ -27,8 +27,8 @@ const LoginScreen = ({ onRegister }: { onRegister: () => void }) => {
     try {
       const response = await loginWithPassword(email.trim(), password);
       await login(response.accessToken, response.user);
-    } catch {
-      setError('Đăng nhập chưa thành công. Kiểm tra tài khoản hoặc máy chủ.');
+    } catch (error) {
+      setError(getAuthErrorMessage(error, 'Đăng nhập chưa thành công. Hãy kiểm tra tài khoản hoặc máy chủ.'));
     } finally {
       setLoading(false);
     }

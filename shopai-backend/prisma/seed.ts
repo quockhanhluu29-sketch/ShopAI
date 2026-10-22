@@ -53,7 +53,7 @@ async function main() {
   const password = await bcrypt.hash('123456', 10);
   await prisma.user.upsert({
     where: { email },
-    update: { name: 'ShopAI Demo' },
+    update: { name: 'ShopAI Demo', password },
     create: { email, name: 'ShopAI Demo', password },
   });
   for (const product of products) {

@@ -6,7 +6,7 @@ import ShopInput from '@components/ui/ShopInput';
 import Typography from '@components/ui/Typography';
 import { COLORS, SIZES } from '@constants/theme';
 import { useAuthStore } from '@store/useAuthStore';
-import { registerAccount } from '@services/authService';
+import { getAuthErrorMessage, registerAccount } from '@services/authService';
 import { useTheme } from '@contexts/ThemeContext';
 
 const RegisterScreen = ({ onLogin }: { onLogin: () => void }) => {
@@ -29,8 +29,8 @@ const RegisterScreen = ({ onLogin }: { onLogin: () => void }) => {
     try {
       const response = await registerAccount(name.trim(), email.trim(), password);
       await login(response.accessToken, response.user);
-    } catch {
-      setError('Không thể tạo tài khoản. Email có thể đã được sử dụng.');
+    } catch (error) {
+      setError(getAuthErrorMessage(error, 'Không thể tạo tài khoản. Hãy kiểm tra thông tin và thử lại.'));
     } finally {
       setLoading(false);
     }

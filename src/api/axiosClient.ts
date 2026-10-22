@@ -5,7 +5,8 @@ import { useAuthStore } from '@store/useAuthStore';
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  // Render's free instance can take 50+ seconds to wake after inactivity.
+  timeout: 75000,
   headers: { 'Content-Type': 'application/json' },
 });
 

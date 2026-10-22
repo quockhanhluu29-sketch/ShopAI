@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-
 declare const process: { env: { APP_ENV?: string; API_BASE_URL?: string } };
 
 export type AppEnv = 'development' | 'staging' | 'production';
@@ -12,12 +10,14 @@ export const APP_ENV: AppEnv = validEnvironments.includes(configuredEnvironment 
     ? 'development'
     : 'production';
 
-const DEVELOPMENT_API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+// Use the deployed API by default so local Android runs and EAS builds can
+// authenticate without requiring a separate local backend.
+const DEPLOYED_API_URL = 'https://shopai-backend-kjii.onrender.com';
 
 const API_URLS: Record<AppEnv, string> = {
-  development: DEVELOPMENT_API_URL,
-  staging: 'https://staging-api.shopai.example',
-  production: 'https://api.shopai.example',
+  development: DEPLOYED_API_URL,
+  staging: DEPLOYED_API_URL,
+  production: DEPLOYED_API_URL,
 };
 
 export const API_BASE_URL: string = process.env.API_BASE_URL || API_URLS[APP_ENV];
